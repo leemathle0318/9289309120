@@ -1,1 +1,37 @@
 
+name: Build VCam LIVE Audio Bridge v0.3
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: brew install ldid dpkg
+
+      - name: Install Theos and iOS SDK
+        run: |
+          git clone --depth 1 --recursive https://github.com/theos/theos.git "$HOME/theos"
+          mkdir -p "$HOME/theos/sdks"
+          curl -fL --retry 3 -o /tmp/ios-sdk.tar.xz \
+            https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS16.5.sdk.tar.xz
+          tar -xJf /tmp/ios-sdk.tar.xz -C "$HOME/theos/sdks"
+          test -d "$HOME/theos/sdks/iPhoneOS16.5.sdk"
+
+      - name: Build experimental DEB
+        run: |
+          export THEOS="$HOME/theos"
+          make clean package FINALPACKAGE=1
+          ls -lh packages/*.deb
+
+      - name: Upload test package
+        uses: actions/upload-artifact@v4
+        with:
+          name: VCam-LIVE-Audio-Bridge-v0.3-EXPERIMENTAL
+          path: packages/*.deb
+          if-no-files-found: error
