@@ -1,0 +1,8 @@
+Package: com.vcam.livebridge
+Name: VCam LIVE Audio Bridge (EXPERIMENTAL)
+Version: 0.3.0
+Architecture: iphoneos-arm64
+Section: Tweaks
+Maintainer: Independent Test Build
+Depends: firmware (>= 15.0), ellekit
+Description: Experimental TikTok AudioUnitRender bridge from 48k mono PCM UDP. Original VCam remains untouched.
